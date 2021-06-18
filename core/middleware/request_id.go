@@ -22,7 +22,7 @@ type requestID struct {
 	next       http.Handler
 }
 
-func withRequestID(generator GenerateIDFunc) Middleware {
+func WithRequestID(generator GenerateIDFunc) Middleware {
 	return func(next http.Handler) http.Handler {
 		return &requestID{next: next, generateID: generator}
 	}
