@@ -153,6 +153,10 @@ func (s *System) Stop() error {
 	return s.httpServer.Shutdown(ctx)
 }
 
+func (s *System) RegisterChecker(component string, checker healthz.HealthChecker) error {
+	return s.healthHandler.RegisterChecker(component, checker)
+}
+
 func (s *System) initializeServer() {
 	s.mux = http.NewServeMux()
 	s.httpServer = &http.Server{
