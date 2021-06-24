@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -61,5 +61,5 @@ func (t *Throttle) StreamServerInterceptor(srv interface{}, ss grpc.ServerStream
 	}
 	defer t.semaphore.Release()
 
-	return handler(ctx, ss)
+	return handler(srv, ss)
 }
