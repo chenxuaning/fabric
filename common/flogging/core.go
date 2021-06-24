@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -82,7 +82,7 @@ func (c *Core) Check(e zapcore.Entry, ce *zapcore.CheckedEntry) *zapcore.Checked
 	}
 
 	if c.Enabled(e.Level) && c.Levels.Level(e.LoggerName).Enabled(e.Level) {
-		ce.AddCore(e, c)
+		return ce.AddCore(e, c)
 	}
 	return ce
 }
@@ -117,7 +117,7 @@ func (c *Core) Sync() error {
 }
 
 func addFields(enc zapcore.ObjectEncoder, fields []zapcore.Field) {
-	for _, field := range fields {
-		field.AddTo(enc)
+	for i := range fields {
+		fields[i].AddTo(enc)
 	}
 }

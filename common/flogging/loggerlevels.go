@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -43,7 +43,7 @@ func (l *LoggerLevels) ActivateSpec(spec string) error {
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 
-	defaultLevel := l.defaultLevel
+	defaultLevel := zapcore.InfoLevel
 	specs := map[string]zapcore.Level{}
 	for _, field := range strings.Split(spec, ":") {
 		split := strings.Split(field, "=")
@@ -65,6 +65,10 @@ func (l *LoggerLevels) ActivateSpec(spec string) error {
 			level := NameToLevel(split[1])
 			loggers := strings.Split(split[0], ",")
 			for _, logger := range loggers {
+				// check if the logger name in the spec is valid. The
+				// trailing period is trimmed as logger names in specs
+				// ending with a period signifies that this part of the
+				// spec refers to the exact logger name (i.e. is not a prefix)
 				if !isValidLoggerName(strings.TrimSuffix(logger, ".")) {
 					return errors.Errorf("invalid logging specification '%s': bad logger name '%s'", spec, logger)
 				}
@@ -94,6 +98,10 @@ func (l *LoggerLevels) ActivateSpec(spec string) error {
 // logggerNameRegexp defines the valid logger names
 var loggerNameRegexp = regexp.MustCompile(`^[[:alnum:]_#:-]+(\.[[:alnum:]_#:-]+)*$`)
 
+// isValidLoggerName checks whether a logger name contains only valid
+// characters. Names that begin/end with periods or contain special
+// characters (other than periods, underscores, pound signs, colons
+// and dashes) are invalid.
 func isValidLoggerName(loggerName string) bool {
 	return loggerNameRegexp.MatchString(loggerName)
 }
@@ -114,26 +122,30 @@ func (l *LoggerLevels) Level(loggerName string) zapcore.Level {
 	return level
 }
 
+// calculateLevel walks the logger name back to find the appropriate
+// log level from the current spec.
 func (l *LoggerLevels) calculateLevel(loggerName string) zapcore.Level {
-	candicate := loggerName + "."
+	candidate := loggerName + "."
 	for {
-		if lvl, ok := l.specs[candicate]; ok {
+		if lvl, ok := l.specs[candidate]; ok {
 			return lvl
 		}
 
-		idx := strings.LastIndex(candicate, ".")
+		idx := strings.LastIndex(candidate, ".")
 		if idx <= 0 {
 			return l.defaultLevel
 		}
-		candicate = candicate[:idx]
+		candidate = candidate[:idx]
 	}
 }
 
+// cachedLevel attempts to retrieve the effective log level for a logger from the
+// cache. If the logger is not found, ok will be false.
 func (l *LoggerLevels) cachedLevel(loggerName string) (lvl zapcore.Level, ok bool) {
 	l.mutex.RLock()
-	lvl, ok = l.levelCache[loggerName]
+	level, ok := l.levelCache[loggerName]
 	l.mutex.RUnlock()
-	return
+	return level, ok
 }
 
 // Spec returns a normalized version of the active logging spec.

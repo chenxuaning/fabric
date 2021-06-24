@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -14,9 +14,13 @@ import (
 )
 
 const (
+	// DisabledLevel represents a disabled log level. Logs at this level should
+	// never be emitted.
 	DisabledLevel = zapcore.Level(math.MinInt8)
 
-	PayloadLevel = zapcore.DebugLevel - 1
+	// PayloadLevel is used to log the extremely detailed message level debug
+	// information.
+	PayloadLevel = zapcore.Level(zapcore.DebugLevel - 1)
 )
 
 // NameToLevel converts a level name to a zapcore.Level.  If the level name is
@@ -37,7 +41,7 @@ func nameToLevel(level string) (zapcore.Level, error) {
 		return zapcore.DebugLevel, nil
 	case "INFO", "info":
 		return zapcore.InfoLevel, nil
-	case "WARNING", "warning", "WARN", "warn":
+	case "WARNING", "WARN", "warning", "warn":
 		return zapcore.WarnLevel, nil
 	case "ERROR", "error":
 		return zapcore.ErrorLevel, nil

@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -12,10 +12,9 @@ import (
 	"os"
 	"sync"
 
-	zaplogfmt "github.com/sykesm/zap-logfmt"
-
 	"github.com/hyperledger/fabric/common/flogging/fabenc"
-	"github.com/op/go-logging"
+	logging "github.com/op/go-logging"
+	zaplogfmt "github.com/sykesm/zap-logfmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -176,12 +175,12 @@ func (s *Logging) SetObserver(observer Observer) {
 // Write satisfies the io.Write contract. It delegates to the writer argument
 // of SetWriter or the Writer field of Config. The Core uses this when encoding
 // log records.
-func (s *Logging) Write(p []byte) (n int, err error) {
+func (s *Logging) Write(b []byte) (int, error) {
 	s.mutex.RLock()
 	w := s.writer
 	s.mutex.RUnlock()
 
-	return w.Write(p)
+	return w.Write(b)
 }
 
 // Sync satisfies the zapcore.WriteSyncer interface. It is used by the Core to
@@ -207,7 +206,7 @@ func (s *Logging) Encoding() Encoding {
 // used to determine which log levels are enabled.
 func (s *Logging) ZapLogger(name string) *zap.Logger {
 	if !isValidLoggerName(name) {
-		panic(fmt.Sprintf("invalid logger name: '%s'", name))
+		panic(fmt.Sprintf("invalid logger name: %s", name))
 	}
 
 	s.mutex.RLock()

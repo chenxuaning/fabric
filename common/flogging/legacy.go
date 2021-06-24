@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -14,6 +14,15 @@ import (
 
 	"github.com/op/go-logging"
 )
+
+// These interfaces are used by the chaincode shim at the 1.2 version.
+// If we remove them, vendored shims are unlikely to compile against
+// newer levels of the peer.
+
+// SetFormat(string) logging.Formatter
+// InitBackend(logging.Formatter, io.Writer)
+// DefaultLevel() string
+// InitFromSpec(string) string
 
 // SetFormat sets the logging format.
 func SetFormat(formatSpec string) logging.Formatter {

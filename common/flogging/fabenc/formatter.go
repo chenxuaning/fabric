@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -47,7 +47,7 @@ var formatRegexp = regexp.MustCompile(`%{(color|id|level|message|module|shortfun
 //
 func ParseFormat(spec string) ([]Formatter, error) {
 	cursor := 0
-	var formatters []Formatter
+	formatters := []Formatter{}
 
 	// iterate over the regex groups and convert to formatters
 	matches := formatRegexp.FindAllStringSubmatchIndex(spec, -1)
@@ -82,7 +82,7 @@ func ParseFormat(spec string) ([]Formatter, error) {
 	return formatters, nil
 }
 
-// MultiFormatter presents multiple formatters as a single Formatter. It can
+// A MultiFormatter presents multiple formatters as a single Formatter. It can
 // be used to change the set of formatters associated with an encoder at
 // runtime.
 type MultiFormatter struct {
@@ -103,8 +103,8 @@ func NewMultiFormatter(formatters ...Formatter) *MultiFormatter {
 // buffer.
 func (m *MultiFormatter) Format(w io.Writer, entry zapcore.Entry, fields []zapcore.Field) {
 	m.mutex.RLock()
-	for _, formatter := range m.formatters {
-		formatter.Format(w, entry, fields)
+	for i := range m.formatters {
+		m.formatters[i].Format(w, entry, fields)
 	}
 	m.mutex.RUnlock()
 }
@@ -116,10 +116,8 @@ func (m *MultiFormatter) SetFormatters(formatters []Formatter) {
 	m.mutex.Unlock()
 }
 
-// StringFormatter formats a fixed string.
-type StringFormatter struct {
-	Value string
-}
+// A StringFormatter formats a fixed string.
+type StringFormatter struct{ Value string }
 
 // Format writes the formatter's fixed string to provided writer.
 func (s StringFormatter) Format(w io.Writer, entry zapcore.Entry, fields []zapcore.Field) {
@@ -149,9 +147,10 @@ func NewFormatter(verb, format string) (Formatter, error) {
 	}
 }
 
+// A ColorFormatter formats an SGR color code.
 type ColorFormatter struct {
-	Bold  bool
-	Reset bool
+	Bold  bool // set the bold attribute
+	Reset bool // reset colors and attributes
 }
 
 func newColorFormatter(f string) (ColorFormatter, error) {
@@ -239,6 +238,9 @@ func (m ModuleFormatter) Format(w io.Writer, entry zapcore.Entry, fields []zapco
 // instances.
 var sequence uint64
 
+// SetSequence explicitly sets the global sequence number.
+func SetSequence(s uint64) { atomic.StoreUint64(&sequence, s) }
+
 // SequenceFormatter formats a global sequence number.
 type SequenceFormatter struct{ FormatVerb string }
 
@@ -277,7 +279,7 @@ func (s ShortFuncFormatter) Format(w io.Writer, entry zapcore.Entry, fields []za
 type TimeFormatter struct{ Layout string }
 
 func newTimeFormatter(f string) TimeFormatter {
-	return TimeFormatter{Layout: stringOrDefault(f, "")}
+	return TimeFormatter{Layout: stringOrDefault(f, "2006-01-02T15:04:05.999Z07:00")}
 }
 
 // Format writes the log record time stamp to the provided writer.
@@ -289,6 +291,5 @@ func stringOrDefault(str, dflt string) string {
 	if str != "" {
 		return str
 	}
-
 	return dflt
 }

@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -14,13 +14,13 @@ import (
 var (
 	CheckedCountOpts = metrics.CounterOpts{
 		Namespace:    "logging",
-		Name:         "entrics_checked",
+		Name:         "entries_checked",
 		Help:         "Number of log entries checked against the active logging level",
 		LabelNames:   []string{"level"},
 		StatsdFormat: "%{#fqname}.%{level}",
 	}
 
-	WriteCouterOpts = metrics.CounterOpts{
+	WriteCountOpts = metrics.CounterOpts{
 		Namespace:    "logging",
 		Name:         "entries_written",
 		Help:         "Number of log entries that are written",
@@ -37,7 +37,7 @@ type Observer struct {
 func NewObserver(provider metrics.Provider) *Observer {
 	return &Observer{
 		CheckedCounter: provider.NewCounter(CheckedCountOpts),
-		WrittenCounter: provider.NewCounter(WriteCouterOpts),
+		WrittenCounter: provider.NewCounter(WriteCountOpts),
 	}
 }
 

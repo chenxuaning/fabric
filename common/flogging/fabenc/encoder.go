@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -15,7 +15,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// FormatEncoder is a zapcore.Encoder that formats log records according to a
+// A FormatEncoder is a zapcore.Encoder that formats log records according to a
 // go-logging based format specifier.
 type FormatEncoder struct {
 	zapcore.Encoder
@@ -23,7 +23,7 @@ type FormatEncoder struct {
 	pool       buffer.Pool
 }
 
-// Formatter is used to format and write data from a zap log entry.
+// A Formatter is used to format and write data from a zap log entry.
 type Formatter interface {
 	Format(w io.Writer, entry zapcore.Entry, fields []zapcore.Field)
 }
@@ -31,23 +31,24 @@ type Formatter interface {
 func NewFormatEncoder(formatters ...Formatter) *FormatEncoder {
 	return &FormatEncoder{
 		Encoder: zaplogfmt.NewEncoder(zapcore.EncoderConfig{
-			MessageKey:    "",
-			LevelKey:      "",
-			TimeKey:       "",
-			NameKey:       "",
-			CallerKey:     "",
-			StacktraceKey: "",
-			LineEnding:    "\n",
+			MessageKey:     "", // disable
+			LevelKey:       "", // disable
+			TimeKey:        "", // disable
+			NameKey:        "", // disable
+			CallerKey:      "", // disable
+			StacktraceKey:  "", // disable
+			LineEnding:     "\n",
+			EncodeDuration: zapcore.StringDurationEncoder,
 			EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 				enc.AppendString(t.Format("2006-01-02T15:04:05.999Z07:00"))
 			},
-			EncodeDuration: zapcore.StringDurationEncoder},
-		),
+		}),
 		formatters: formatters,
 		pool:       buffer.NewPool(),
 	}
 }
 
+// Clone creates a new instance of this encoder with the same configuration.
 func (f *FormatEncoder) Clone() zapcore.Encoder {
 	return &FormatEncoder{
 		Encoder:    f.Encoder.Clone(),
@@ -56,10 +57,13 @@ func (f *FormatEncoder) Clone() zapcore.Encoder {
 	}
 }
 
+// EncodeEntry formats a zap log record. The structured fields are formatted by a
+// zapcore.ConsoleEncoder and are appended as JSON to the end of the formatted entry.
+// All entries are terminated by a newline.
 func (f *FormatEncoder) EncodeEntry(entry zapcore.Entry, fields []zapcore.Field) (*buffer.Buffer, error) {
 	line := f.pool.Get()
-	for _, formatter := range f.formatters {
-		formatter.Format(line, entry, fields)
+	for _, f := range f.formatters {
+		f.Format(line, entry, fields)
 	}
 
 	encodedFields, err := f.Encoder.EncodeEntry(entry, fields)

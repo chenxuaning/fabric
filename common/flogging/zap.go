@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -20,10 +20,13 @@ import (
 // the provided logger name. The logger that is returned will be named the same
 // as the logger.
 func NewZapLogger(core zapcore.Core, options ...zap.Option) *zap.Logger {
-	return zap.New(core, append([]zap.Option{
-		zap.AddCaller(),
-		zap.AddStacktrace(zapcore.ErrorLevel),
-	}, options...)...)
+	return zap.New(
+		core,
+		append([]zap.Option{
+			zap.AddCaller(),
+			zap.AddStacktrace(zapcore.ErrorLevel),
+		}, options...)...,
+	)
 }
 
 // NewGRPCLogger creates a grpc.Logger that delegates to a zap.Logger.
@@ -32,7 +35,6 @@ func NewGRPCLogger(l *zap.Logger) *zapgrpc.Logger {
 		zap.AddCaller(),
 		zap.AddCallerSkip(3),
 	)
-
 	return zapgrpc.NewLogger(l, zapgrpc.WithDebug())
 }
 
@@ -43,7 +45,7 @@ func NewFabricLogger(l *zap.Logger, options ...zap.Option) *FabricLogger {
 	}
 }
 
-// FabricLogger is an adapter around a zap.SugaredLogger that provides
+// A FabricLogger is an adapter around a zap.SugaredLogger that provides
 // structured logging capabilities while preserving much of the legacy logging
 // behavior.
 //

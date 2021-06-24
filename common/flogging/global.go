@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -27,8 +27,8 @@ func init() {
 	}
 
 	Global = logging
-	grpclogger := Global.ZapLogger("grpc")
-	grpclog.SetLogger(NewGRPCLogger(grpclogger))
+	grpcLogger := Global.ZapLogger("grpc")
+	grpclog.SetLogger(NewGRPCLogger(grpcLogger))
 }
 
 // Init initializes logging with the provided config.

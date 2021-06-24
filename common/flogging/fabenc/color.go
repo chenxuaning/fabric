@@ -1,12 +1,14 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
 
 package fabenc
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Color uint8
 
@@ -34,6 +36,4 @@ func (c Color) Bold() string {
 	return fmt.Sprintf("\x1b[%d;1m", c)
 }
 
-func ResetColor() string {
-	return ColorNone.Normal()
-}
+func ResetColor() string { return ColorNone.Normal() }
