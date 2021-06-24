@@ -3,6 +3,7 @@ Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
+
 package main
 
 import (
@@ -198,7 +199,7 @@ PeerOrgs:
       Count: 1
 `
 
-//command line flags
+// command line flags
 var (
 	app = kingpin.New("cryptogen", "Utility for generating Hyperledger Fabric key material")
 

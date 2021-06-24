@@ -1,5 +1,6 @@
 /*
 Copyright IBM Corp. All Rights Reserved.
+
 SPDX-License-Identifier: Apache-2.0
 */
 
@@ -132,7 +133,7 @@ func (vdb *versionedDB) GetStateRangeScanIteratorWithMetadata(namespace string, 
 	requestedLimit := int32(0)
 	// if metadata is provided, validate and apply options
 	if metadata != nil {
-		//validate the metadata
+		// validate the metadata
 		err := statedb.ValidateRangeMetadata(metadata)
 		if err != nil {
 			return nil, err

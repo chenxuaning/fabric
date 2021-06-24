@@ -1,5 +1,6 @@
 /*
 Copyright IBM Corp. All Rights Reserved.
+
 SPDX-License-Identifier: Apache-2.0
 */
 
@@ -126,7 +127,7 @@ func (v *Validator) validateEndorserTX(
 
 	var validationCode = peer.TxValidationCode_VALID
 	var err error
-	//mvccvalidation, may invalidate transaction
+	// mvccvalidation, may invalidate transaction
 	if doMVCCValidation {
 		validationCode, err = v.validateTx(txRWSet, updates)
 	}
@@ -135,7 +136,7 @@ func (v *Validator) validateEndorserTX(
 
 func (v *Validator) validateTx(txRWSet *rwsetutil.TxRwSet, updates *internal.PubAndHashUpdates) (peer.TxValidationCode, error) {
 	// Uncomment the following only for local debugging. Don't want to print data in the logs in production
-	//logger.Debugf("validateTx - validating txRWSet: %s", spew.Sdump(txRWSet))
+	// logger.Debugf("validateTx - validating txRWSet: %s", spew.Sdump(txRWSet))
 	for _, nsRWSet := range txRWSet.NsRwSets {
 		ns := nsRWSet.NameSpace
 		// Validate public reads
@@ -163,9 +164,9 @@ func (v *Validator) validateTx(txRWSet *rwsetutil.TxRwSet, updates *internal.Pub
 	return peer.TxValidationCode_VALID, nil
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/////                 Validation of public read-set
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
+// ///                 Validation of public read-set
+// //////////////////////////////////////////////////////////////////////////////
 func (v *Validator) validateReadSet(ns string, kvReads []*kvrwset.KVRead, updates *privacyenabledstate.PubUpdateBatch) (bool, error) {
 	for _, kvRead := range kvReads {
 		if valid, err := v.validateKVRead(ns, kvRead, updates); !valid || err != nil {
@@ -197,9 +198,9 @@ func (v *Validator) validateKVRead(ns string, kvRead *kvrwset.KVRead, updates *p
 	return true, nil
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/////                 Validation of range queries
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
+// ///                 Validation of range queries
+// //////////////////////////////////////////////////////////////////////////////
 func (v *Validator) validateRangeQueries(ns string, rangeQueriesInfo []*kvrwset.RangeQueryInfo, updates *privacyenabledstate.PubUpdateBatch) (bool, error) {
 	for _, rqi := range rangeQueriesInfo {
 		if valid, err := v.validateRangeQuery(ns, rqi, updates); !valid || err != nil {
@@ -239,9 +240,9 @@ func (v *Validator) validateRangeQuery(ns string, rangeQueryInfo *kvrwset.RangeQ
 	return validator.validate()
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/////                 Validation of hashed read-set
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
+// ///                 Validation of hashed read-set
+// //////////////////////////////////////////////////////////////////////////////
 func (v *Validator) validateNsHashedReadSets(ns string, collHashedRWSets []*rwsetutil.CollHashedRwSet,
 	updates *privacyenabledstate.HashedUpdateBatch) (bool, error) {
 	for _, collHashedRWSet := range collHashedRWSets {

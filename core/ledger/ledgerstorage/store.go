@@ -42,7 +42,7 @@ var attrsToIndex = []blkstorage.IndexableAttr{
 	blkstorage.IndexableAttrBlockNum,
 	blkstorage.IndexableAttrTxID,
 	blkstorage.IndexableAttrBlockNumTranNum,
-	//BlockTxID index is necessary to detect duplicateTxID during rollback
+	// BlockTxID index is necessary to detect duplicateTxID during rollback
 	blkstorage.IndexableAttrBlockTxID,
 	blkstorage.IndexableAttrTxValidationCode,
 }

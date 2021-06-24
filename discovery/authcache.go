@@ -16,11 +16,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	defaultMaxCacheSize   = 1000
-	defaultRetentionRatio = 0.75
-)
-
 var (
 	// asBytes is the function that is used to marshal common.SignedData to bytes
 	asBytes = asn1.Marshal

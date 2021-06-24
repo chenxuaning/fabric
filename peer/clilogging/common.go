@@ -10,14 +10,14 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/common/crypto"
 	"github.com/hyperledger/fabric/peer/common"
-	common2 "github.com/hyperledger/fabric/protos/common"
+	cb "github.com/hyperledger/fabric/protos/common"
 	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric/protos/utils"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-type envelopeWrapper func(msg proto.Message) *common2.Envelope
+type envelopeWrapper func(msg proto.Message) *cb.Envelope
 
 // LoggingCmdFactory holds the clients used by LoggingCmd
 type LoggingCmdFactory struct {
@@ -41,8 +41,8 @@ func InitCmdFactory() (*LoggingCmdFactory, error) {
 	}
 
 	localSigner := crypto.NewSignatureHeaderCreator(signer)
-	wrapEnv := func(msg proto.Message) *common2.Envelope {
-		env, err := utils.CreateSignedEnvelope(common2.HeaderType_PEER_ADMIN_OPERATION, "", localSigner, msg, 0, 0)
+	wrapEnv := func(msg proto.Message) *cb.Envelope {
+		env, err := utils.CreateSignedEnvelope(cb.HeaderType_PEER_ADMIN_OPERATION, "", localSigner, msg, 0, 0)
 		if err != nil {
 			logger.Panicf("Failed signing: %v", err)
 		}

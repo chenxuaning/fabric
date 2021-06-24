@@ -1,5 +1,6 @@
 /*
 Copyright IBM Corp. All Rights Reserved.
+
 SPDX-License-Identifier: Apache-2.0
 */
 
@@ -11,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	proto "github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/statedb/statecouchdb/msgs"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/version"
 )
@@ -47,14 +48,6 @@ func decodeVersionAndMetadata(encodedstr string) (*version.Height, []byte, error
 		return nil, nil, err
 	}
 	return ver, versionFieldMsg.Metadata, nil
-}
-
-// encodeVersionOldFormat return string representation of version
-// With the introduction of metadata feature, we change the encoding (see function below). However, we retain
-// this function for test so as to make sure that we can decode old format and support mixed formats present
-// in a statedb. This function should be used only in tests to generate the encoding in old format
-func encodeVersionOldFormat(version *version.Height) string {
-	return fmt.Sprintf("%v:%v", version.BlockNum, version.TxNum)
 }
 
 // decodeVersionOldFormat separates the version and value from encoded string

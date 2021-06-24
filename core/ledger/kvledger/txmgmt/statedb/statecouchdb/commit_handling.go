@@ -1,5 +1,6 @@
 /*
 Copyright IBM Corp. All Rights Reserved.
+
 SPDX-License-Identifier: Apache-2.0
 */
 
@@ -90,7 +91,7 @@ func (committer *subNsCommitter) execute() error {
 
 // commitUpdates commits the given updates to couchdb
 func commitUpdates(db *couchdb.CouchDatabase, batchUpdateMap map[string]*batchableDocument) error {
-	//Add the documents to the batch update array
+	// Add the documents to the batch update array
 	batchUpdateDocs := []*couchdb.CouchDoc{}
 	for _, updateDocument := range batchUpdateMap {
 		batchUpdateDocument := updateDocument
@@ -109,9 +110,9 @@ func commitUpdates(db *couchdb.CouchDatabase, batchUpdateMap map[string]*batchab
 		if respDoc.Ok != true {
 			batchUpdateDocument := batchUpdateMap[respDoc.ID]
 			var err error
-			//Remove the "_rev" from the JSON before saving
-			//this will allow the CouchDB retry logic to retry revisions without encountering
-			//a mismatch between the "If-Match" and the "_rev" tag in the JSON
+			// Remove the "_rev" from the JSON before saving
+			// this will allow the CouchDB retry logic to retry revisions without encountering
+			// a mismatch between the "If-Match" and the "_rev" tag in the JSON
 			if batchUpdateDocument.CouchDoc.JSONValue != nil {
 				err = removeJSONRevision(&batchUpdateDocument.CouchDoc.JSONValue)
 				if err != nil {
@@ -186,7 +187,7 @@ func addRevisionsForMissingKeys(revisions map[string]string, db *couchdb.CouchDa
 	return nil
 }
 
-//batchableDocument defines a document for a batch
+// batchableDocument defines a document for a batch
 type batchableDocument struct {
 	CouchDoc couchdb.CouchDoc
 	Deleted  bool

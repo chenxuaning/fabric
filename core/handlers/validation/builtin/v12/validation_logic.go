@@ -764,7 +764,7 @@ func (vscc *Validator) deduplicateIdentity(cap *pb.ChaincodeActionPayload) ([]*c
 	signatureMap := make(map[string]struct{})
 	// loop through each of the endorsements and build the signature set
 	for _, endorsement := range cap.Action.Endorsements {
-		//unmarshal endorser bytes
+		// unmarshal endorser bytes
 		serializedIdentity := &msp.SerializedIdentity{}
 		if err := proto.Unmarshal(endorsement.Endorser, serializedIdentity); err != nil {
 			logger.Errorf("Unmarshal endorser error: %s", err)

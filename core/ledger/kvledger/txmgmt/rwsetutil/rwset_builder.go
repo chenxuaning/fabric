@@ -1,17 +1,7 @@
 /*
-Copyright IBM Corp. 2016 All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		 http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+SPDX-License-Identifier: Apache-2.0
 */
 
 package rwsetutil
@@ -35,10 +25,10 @@ type RWSetBuilder struct {
 
 type nsPubRwBuilder struct {
 	namespace         string
-	readMap           map[string]*kvrwset.KVRead //for mvcc validation
+	readMap           map[string]*kvrwset.KVRead // for mvcc validation
 	writeMap          map[string]*kvrwset.KVWrite
 	metadataWriteMap  map[string]*kvrwset.KVMetadataWrite
-	rangeQueriesMap   map[rangeQueryKey]*kvrwset.RangeQueryInfo //for phantom read validation
+	rangeQueriesMap   map[rangeQueryKey]*kvrwset.RangeQueryInfo // for phantom read validation
 	rangeQueriesKeys  []rangeQueryKey
 	collHashRwBuilder map[string]*collHashRwBuilder
 }
@@ -199,12 +189,12 @@ func (b *nsPubRwBuilder) build() *NsRwSet {
 	var metadataWriteSet []*kvrwset.KVMetadataWrite
 	var rangeQueriesInfo []*kvrwset.RangeQueryInfo
 	var collHashedRwSet []*CollHashedRwSet
-	//add read set
+	// add read set
 	util.GetValuesBySortedKeys(&(b.readMap), &readSet)
-	//add write set
+	// add write set
 	util.GetValuesBySortedKeys(&(b.writeMap), &writeSet)
 	util.GetValuesBySortedKeys(&(b.metadataWriteMap), &metadataWriteSet)
-	//add range query info
+	// add range query info
 	for _, key := range b.rangeQueriesKeys {
 		rangeQueriesInfo = append(rangeQueriesInfo, b.rangeQueriesMap[key])
 	}

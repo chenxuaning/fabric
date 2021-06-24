@@ -15,7 +15,7 @@ type Identity interface {
 // array of bytes; it is needed to sign the commands transmitted to
 // the prover peer service.
 type SigningIdentity interface {
-	Identity //extends Identity
+	Identity // extends Identity
 
 	Sign(msg []byte) ([]byte, error)
 

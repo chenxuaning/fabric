@@ -3,6 +3,7 @@ Copyright IBM Corp. 2016-2017 All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
+
 package common
 
 import (

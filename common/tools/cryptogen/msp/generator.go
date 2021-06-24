@@ -3,6 +3,7 @@ Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
+
 package msp
 
 import (
@@ -249,7 +250,7 @@ func keyExport(keystore, output string, key bccsp.Key) error {
 }
 
 func pemExport(path, pemType string, bytes []byte) error {
-	//write pem out to file
+	// write pem out to file
 	file, err := os.Create(path)
 	if err != nil {
 		return err

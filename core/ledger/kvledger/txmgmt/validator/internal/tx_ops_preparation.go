@@ -19,7 +19,7 @@ func prepareTxOps(rwset *rwsetutil.TxRwSet, txht *version.Height,
 	precedingUpdates *PubAndHashUpdates, db privacyenabledstate.DB) (txOps, error) {
 	txops := txOps{}
 	txops.applyTxRwset(rwset)
-	//logger.Debugf("prepareTxOps() txops after applying raw rwset=%#v", spew.Sdump(txops))
+	// logger.Debugf("prepareTxOps() txops after applying raw rwset=%#v", spew.Sdump(txops))
 	for ck, keyop := range txops {
 		// check if the final state of the key, value and metadata, is already present in the transaction, then skip
 		// otherwise we need to retrieve latest state and merge in the current value or metadata update
@@ -49,7 +49,7 @@ func prepareTxOps(rwset *rwsetutil.TxRwSet, txht *version.Height,
 			delete(txops, ck)
 		}
 	}
-	//logger.Debugf("prepareTxOps() txops after final processing=%#v", spew.Sdump(txops))
+	// logger.Debugf("prepareTxOps() txops after final processing=%#v", spew.Sdump(txops))
 	return txops, nil
 }
 
@@ -175,7 +175,7 @@ type keyOps struct {
 	metadata []byte
 }
 
-////////////////// txOps functions
+// //////////////// txOps functions
 
 func (txops txOps) upsert(k compositeKey, val []byte) {
 	keyops := txops.getOrCreateKeyEntry(k)
@@ -208,7 +208,7 @@ func (txops txOps) getOrCreateKeyEntry(k compositeKey) *keyOps {
 	return keyops
 }
 
-////////////////// keyOps functions
+// //////////////// keyOps functions
 
 func (keyops keyOps) isDelete() bool {
 	return keyops.flag&(keyDelete) == keyDelete

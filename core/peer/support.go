@@ -10,8 +10,6 @@ import (
 	"github.com/hyperledger/fabric/common/channelconfig"
 )
 
-var supportFactory SupportFactory
-
 // SupportFactory is a factory of Support interfaces
 type SupportFactory interface {
 	// NewSupport returns a Support interface

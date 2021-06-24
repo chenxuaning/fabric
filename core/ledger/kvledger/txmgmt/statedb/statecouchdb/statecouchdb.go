@@ -1,5 +1,6 @@
 /*
 Copyright IBM Corp. All Rights Reserved.
+
 SPDX-License-Identifier: Apache-2.0
 */
 
@@ -348,7 +349,7 @@ func (vdb *VersionedDB) GetStateRangeScanIteratorWithMetadata(namespace string, 
 	requestedLimit := int32(0)
 	// if metadata is provided, validate and apply options
 	if metadata != nil {
-		//validate the metadata
+		// validate the metadata
 		err := statedb.ValidateRangeMetadata(metadata)
 		if err != nil {
 			return nil, err
@@ -495,14 +496,14 @@ func validateQueryMetadata(metadata map[string]interface{}) error {
 	for key, keyVal := range metadata {
 		switch key {
 		case optionBookmark:
-			//Verify the bookmark is a string
+			// Verify the bookmark is a string
 			if _, ok := keyVal.(string); ok {
 				continue
 			}
 			return fmt.Errorf("Invalid entry, \"bookmark\" must be a string")
 
 		case optionLimit:
-			//Verify the limit is an integer
+			// Verify the limit is an integer
 			if _, ok := keyVal.(int32); ok {
 				continue
 			}
@@ -636,9 +637,9 @@ func applyAdditionalQueryOptions(queryString string, queryLimit int32, queryBook
 	const jsonQueryFields = "fields"
 	const jsonQueryLimit = "limit"
 	const jsonQueryBookmark = "bookmark"
-	//create a generic map for the query json
+	// create a generic map for the query json
 	jsonQueryMap := make(map[string]interface{})
-	//unmarshal the selector json into the generic map
+	// unmarshal the selector json into the generic map
 	decoder := json.NewDecoder(bytes.NewBuffer([]byte(queryString)))
 	decoder.UseNumber()
 	err := decoder.Decode(&jsonQueryMap)
@@ -648,7 +649,7 @@ func applyAdditionalQueryOptions(queryString string, queryLimit int32, queryBook
 	if fieldsJSONArray, ok := jsonQueryMap[jsonQueryFields]; ok {
 		switch fieldsJSONArray.(type) {
 		case []interface{}:
-			//Add the "_id", and "version" fields,  these are needed by default
+			// Add the "_id", and "version" fields,  these are needed by default
 			jsonQueryMap[jsonQueryFields] = append(fieldsJSONArray.([]interface{}),
 				idField, versionField)
 		default:
@@ -663,7 +664,7 @@ func applyAdditionalQueryOptions(queryString string, queryLimit int32, queryBook
 	if queryBookmark != "" {
 		jsonQueryMap[jsonQueryBookmark] = queryBookmark
 	}
-	//Marshal the updated json query
+	// Marshal the updated json query
 	editedQuery, err := json.Marshal(jsonQueryMap)
 	if err != nil {
 		return "", err
@@ -716,7 +717,7 @@ func newQueryScanner(namespace string, db *couchdb.CouchDatabase, query string, 
 }
 
 func (scanner *queryScanner) Next() (statedb.QueryResult, error) {
-	//test for no results case
+	// test for no results case
 	if len(scanner.resultsInfo.results) == 0 {
 		return nil, nil
 	}
@@ -735,12 +736,12 @@ func (scanner *queryScanner) Next() (statedb.QueryResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		//if no more results, then return
+		// if no more results, then return
 		if len(scanner.resultsInfo.results) == 0 {
 			return nil, nil
 		}
 	}
-	//If the cursor is greater than or equal to the number of result records, return
+	// If the cursor is greater than or equal to the number of result records, return
 	if scanner.paginationInfo.cursor >= int32(len(scanner.resultsInfo.results)) {
 		return nil, nil
 	}
