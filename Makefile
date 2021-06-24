@@ -322,6 +322,11 @@ docker-tag-commit-push: $(IMAGES:%=%-docker-tag-commit-push)
 	docker tag $(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG) 172.16.10.134:8088/$(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG)
 	docker push 172.16.10.134:8088/$(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG)
 
+docker-untag: $(IMAGES:%=%-docker-untag)
+%-docker-untag:
+	$(eval TARGET = ${patsubst %-docker-untag,%,${@}})
+	docker rmi 172.16.10.134:8088/$(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG)
+
 docker-tag-stable: $(IMAGES:%=%-docker-tag-stable)
 
 %-docker-tag-stable:
