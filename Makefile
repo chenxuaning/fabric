@@ -21,7 +21,7 @@ endif
 BUILD_DIR ?= .build
 
 EXTRA_VERSION ?= $(shell git rev-parse --short HEAD)
-PROJECT_VERSION=$(BASE_VERSION)-snapshot-$(EXTRA_VERSION)
+PROJECT_VERSION=$(BASE_VERSION)-$(EXTRA_VERSION)
 
 PKGNAME = github.com/$(PROJECT_NAME)
 CGO_FLAGS = CGO_CFLAGS=" "
