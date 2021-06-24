@@ -311,12 +311,6 @@ func GetBytesChaincodeProposalPayload(cpp *peer.ChaincodeProposalPayload) ([]byt
 	return cppBytes, errors.Wrap(err, "error marshaling ChaincodeProposalPayload")
 }
 
-// GetBytesResponse gets the bytes of Response
-func GetBytesResponse(res *peer.Response) ([]byte, error) {
-	resBytes, err := proto.Marshal(res)
-	return resBytes, errors.Wrap(err, "error marshaling Response")
-}
-
 // GetBytesChaincodeEvent gets the bytes of ChaincodeEvent
 func GetBytesChaincodeEvent(event *peer.ChaincodeEvent) ([]byte, error) {
 	eventBytes, err := proto.Marshal(event)

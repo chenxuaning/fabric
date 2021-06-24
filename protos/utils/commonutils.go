@@ -34,6 +34,22 @@ func Marshal(pb proto.Message) ([]byte, error) {
 	return proto.Marshal(pb)
 }
 
+// CreateNonceOrPanic generates a nonce using the common/crypto package
+// and panics if this operation fails.
+func CreateNonceOrPanic() []byte {
+	nonce, err := CreateNonce()
+	if err != nil {
+		panic(err)
+	}
+	return nonce
+}
+
+// CreateNonce generates a nonce using the common/crypto package.
+func CreateNonce() ([]byte, error) {
+	nonce, err := crypto.GetRandomNonce()
+	return nonce, errors.WithMessage(err, "error generating random nonce")
+}
+
 // UnmarshalPayloadOrPanic unmarshals bytes to a Payload structure or panics
 // on error
 func UnmarshalPayloadOrPanic(encoded []byte) *cb.Payload {
@@ -157,6 +173,28 @@ func MakeChannelHeader(headerType cb.HeaderType, version int32, chainID string, 
 		},
 		ChannelId: chainID,
 		Epoch:     epoch,
+	}
+}
+
+// SetTxID generates a transaction id based on the provided signature header
+// and sets the TxId field in the channel header
+func SetTxID(channelHeader *cb.ChannelHeader, signatureHeader *cb.SignatureHeader) error {
+	txid, err := ComputeTxID(
+		signatureHeader.Nonce,
+		signatureHeader.Creator,
+	)
+	if err != nil {
+		return err
+	}
+	channelHeader.TxId = txid
+	return nil
+}
+
+// MakeSignatureHeader creates a SignatureHeader.
+func MakeSignatureHeader(serializedCreatorCertChain []byte, nonce []byte) *cb.SignatureHeader {
+	return &cb.SignatureHeader{
+		Creator: serializedCreatorCertChain,
+		Nonce:   nonce,
 	}
 }
 
