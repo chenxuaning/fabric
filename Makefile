@@ -304,7 +304,7 @@ docker-list: $(patsubst %,%-docker-list, $(IMAGES))
 
 %-docker-clean:
 	$(eval TARGET = ${patsubst %-docker-clean,%,${@}})
-	-docker images --quiet --filter=reference='$(DOCKER_NS)/fabric-$(TARGET):$(ARCH)-$(BASE_VERSION)$(if $(EXTRA_VERSION),-snapshot-*,)' | xargs docker rmi -f
+	-docker images --quiet --filter=reference='$(DOCKER_NS)/fabric-$(TARGET):$(ARCH)-$(BASE_VERSION)$(if $(EXTRA_VERSION),-*,)' | xargs docker rmi -f
 	-@rm -rf $(BUILD_DIR)/image/$(TARGET) ||:
 
 docker-clean: $(patsubst %,%-docker-clean, $(IMAGES))
@@ -314,6 +314,13 @@ docker-tag-latest: $(IMAGES:%=%-docker-tag-latest)
 %-docker-tag-latest:
 	$(eval TARGET = ${patsubst %-docker-tag-latest,%,${@}})
 	docker tag $(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG) $(DOCKER_NS)/fabric-$(TARGET):latest
+
+docker-tag-commit-push: $(IMAGES:%=%-docker-tag-commit-push)
+
+%-docker-tag-commit-push:
+	$(eval TARGET = ${patsubst %-docker-tag-commit-push,%,${@}})
+	docker tag $(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG) 172.16.10.134:8088/$(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG)
+	docker push 172.16.10.134:8088/$(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG)
 
 docker-tag-stable: $(IMAGES:%=%-docker-tag-stable)
 
