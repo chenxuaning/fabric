@@ -7,11 +7,12 @@ SPDX-License-Identifier: Apache-2.0
 package comm
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"time"
 
+	"github.com/cetcxinlian/cryptogm/tls"
+	"github.com/cetcxinlian/cryptogm/x509"
 	"github.com/hyperledger/fabric/common/flogging"
+	"github.com/hyperledger/fabric/common/metrics"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )
@@ -37,6 +38,10 @@ var (
 		tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 		tls.TLS_RSA_WITH_AES_128_GCM_SHA256,
 		tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+	}
+	// strong GM TLS cipher suites
+	DefaultGMTLSCipherSuites = []uint16{
+		tls.GMTLS_SM2_WITH_SM4_SM3,
 	}
 	// default connection timeout
 	DefaultConnectionTimeout = 5 * time.Second
@@ -135,6 +140,13 @@ type KeepaliveOptions struct {
 	// ServerMinInterval is the minimum permitted time between client pings.
 	// If clients send pings more frequently, the server will disconnect them
 	ServerMinInterval time.Duration
+}
+
+type Metrics struct {
+	// OpenConnCounter keeps track of number of open connections
+	OpenConnCounter metrics.Counter
+	// ClosedConnCounter keeps track of number connections closed
+	ClosedConnCounter metrics.Counter
 }
 
 // ServerKeepaliveOptions returns gRPC keepalive options for server.  If

@@ -10,11 +10,11 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/pem"
 	"fmt"
 	"reflect"
 
+	"github.com/cetcxinlian/cryptogm/x509"
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/pkg/errors"
 )

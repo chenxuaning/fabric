@@ -1,5 +1,5 @@
 /*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
+Copyright IBM Corp. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -10,9 +10,9 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/pem"
 
+	"github.com/cetcxinlian/cryptogm/x509"
 	"github.com/golang/protobuf/proto"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/credentials"
@@ -31,16 +31,23 @@ func AddPemToCertPool(pemCerts []byte, pool *x509.CertPool) error {
 	return nil
 }
 
+// utility function to parse PEM-encoded certs
 func pemToX509Certs(pemCerts []byte) ([]*x509.Certificate, []string, error) {
-	// It's possible that multiple certs are encoded
-	var certs []*x509.Certificate
-	var subjects []string
+
+	// it's possible that multiple certs are encoded
+	certs := []*x509.Certificate{}
+	subjects := []string{}
 	for len(pemCerts) > 0 {
 		var block *pem.Block
 		block, pemCerts = pem.Decode(pemCerts)
 		if block == nil {
 			break
 		}
+		/** TODO: check why msp does not add type to PEM header
+		if block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
+			continue
+		}
+		*/
 
 		cert, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
