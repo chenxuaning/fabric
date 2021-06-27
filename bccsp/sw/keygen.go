@@ -13,6 +13,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
+	"github.com/cetcxinlian/cryptogm/sm2"
 	"github.com/hyperledger/fabric/bccsp"
 )
 
@@ -54,4 +55,17 @@ func (kg *rsaKeyGenerator) KeyGen(opts bccsp.KeyGenOpts) (bccsp.Key, error) {
 	}
 
 	return &rsaPrivateKey{lowLevelKey}, nil
+}
+
+type sm2KeyGenerator struct {
+	curve elliptic.Curve
+}
+
+func (kg *sm2KeyGenerator) KeyGen(opts bccsp.KeyGenOpts) (bccsp.Key, error) {
+	privKey, err := sm2.GenerateKey(rand.Reader)
+	if err != nil {
+		return nil, fmt.Errorf("Failed generating sm2 key : [%s]", err)
+	}
+
+	return &sm2PrivateKey{privKey}, nil
 }

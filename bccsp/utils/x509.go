@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package utils
 
 import (
-	"crypto/x509"
+	"github.com/cetcxinlian/cryptogm/x509"
 )
 
 // DERToX509Certificate converts der to x509
