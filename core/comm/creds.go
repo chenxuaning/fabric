@@ -8,10 +8,10 @@ package comm
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"net"
 
+	"github.com/cetcxinlian/cryptogm/tls"
 	"github.com/hyperledger/fabric/common/flogging"
 	"google.golang.org/grpc/credentials"
 )
@@ -24,8 +24,6 @@ var (
 			"not supported")
 	ServerHandshakeNotImplementedError = errors.New("core/comm: server handshakes are not implemented with clientCreds")
 
-	MissingServerConfigError = errors.New(
-		"core/comm: `serverConfig` cannot be nil")
 	// alpnProtoStr are the specified application level protocols for gRPC.
 	alpnProtoStr = []string{"h2"}
 )
@@ -40,7 +38,13 @@ func NewServerTransportCredentials(
 	// clone the tls.Config which allows us to update it dynamically
 	serverConfig.NextProtos = alpnProtoStr
 	// override TLS version and ensure it is 1.2
-	serverConfig.MinVersion = tls.VersionTLS12
+
+	// GMTLS support
+	if serverConfig.GMSupport != nil {
+		serverConfig.MinVersion = tls.VersionGMSSL
+	} else {
+		serverConfig.MinVersion = tls.VersionTLS12
+	}
 	serverConfig.MaxVersion = tls.VersionTLS12
 	return &serverCreds{
 		serverConfig: serverConfig,
